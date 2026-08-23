@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import ReactMarkdown from 'react-markdown';
+import { ASSISTANT_API } from '../config/api';
 
 export default function ExpenseAssistant({ isOpen, onClose, activeTrip, onExpenseAdded }) {
   const { getToken } = useAuth();
@@ -50,7 +51,7 @@ export default function ExpenseAssistant({ isOpen, onClose, activeTrip, onExpens
 
     try {
       const token = await getToken();
-      const res = await fetch('http://localhost:8001/api/expense-chat', {
+      const res = await fetch(`${ASSISTANT_API}/assistant/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -148,7 +148,7 @@ export default function Planner() {
     try {
       setLoadingHistory(true);
       const token = await getToken();
-      const res = await fetch(`http://localhost:8001/api/travel/saved?user_id=${userId || ''}`, {
+      const res = await fetch(`${PLANNER_API}/travel/saved?user_id=${userId || ''}`, {
         headers: { 
           'Authorization': token ? `Bearer ${token}` : '',
           'x-user-id': userId || ''
