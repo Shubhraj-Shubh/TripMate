@@ -1,0 +1,173 @@
+/* =========================================================
+   Planner Workspace & Sleek Travel Report Table Styles
+   ========================================================= */
+
+.planner-page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  width: 100%;
+}
+
+.planner-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.planner-header h1 {
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.planner-header p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-top: 4px;
+}
+
+/* Query Input Box */
+.planner-input-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 28px;
+}
+
+.planner-input-row {
+  display: flex;
+  gap: 12px;
+}
+
+.planner-input-row input {
+  flex: 1;
+  padding: 12px 18px;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.planner-input-row input:focus {
+  border-color: var(--border-focus);
+}
+
+/* =========================================================
+   Sleek Markdown Table System (Aligned in Draft & Finalized)
+   ========================================================= */
+.markdown-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  margin: 18px 0;
+}
+
+table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  margin: 18px 0 !important;
+  background-color: #0b1120 !important;
+  border: 1px solid #334155 !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  font-size: 0.9rem !important;
+  display: table !important;
+}
+
+thead {
+  background-color: #1e293b !important;
+  display: table-header-group !important;
+}
+
+thead tr {
+  border-bottom: 2px solid #475569 !important;
+}
+
+th {
+  padding: 12px 16px !important;
+  color: #818cf8 !important;
+  font-weight: 600 !important;
+  text-align: left !important;
+  border: 1px solid #334155 !important;
+  letter-spacing: 0.3px !important;
+}
+
+td {
+  padding: 12px 16px !important;
+  color: #cbd5e1 !important;
+  border: 1px solid #334155 !important;
+  vertical-align: middle !important;
+}
+
+tbody tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+tbody tr:hover {
+  background-color: rgba(99, 102, 241, 0.07) !important;
+}
+
+td strong, th strong {
+  color: #f8fafc !important;
+}
+
+/* =========================================================
+   Executive Print to PDF Stylesheet
+   ========================================================= */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+  }
+
+  nav, header, .navbar, .btn, .card:not(:has(.final-report-print-container)), form, .toast, .sidebar {
+    display: none !important;
+  }
+
+  .final-report-print-container {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: none !important;
+    padding: 0 !important;
+    width: 100% !important;
+    box-shadow: none !important;
+  }
+
+  .final-report-print-container h1,
+  .final-report-print-container h2,
+  .final-report-print-container h3,
+  .final-report-print-container h4,
+  .final-report-print-container strong {
+    color: #0f172a !important;
+  }
+
+  .final-report-print-container p,
+  .final-report-print-container li,
+  .final-report-print-container span {
+    color: #334155 !important;
+  }
+
+  .final-report-print-container table {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #0f172a !important;
+  }
+
+  .final-report-print-container th {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+  }
+
+  .final-report-print-container td {
+    color: #334155 !important;
+    border: 1px solid #cbd5e1 !important;
+  }
+}

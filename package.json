@@ -1,0 +1,14 @@
+{
+  "name": "tripmate",
+  "version": "1.0.0",
+  "description": "TripMate - Unified AI Travel Planning, Expense Splitting & Multi-Agent Assistant Platform",
+  "scripts": {
+    "dev:frontend": "cd frontend && npm run dev",
+    "start:splitmate": "cd splitmate-backend && node server.js",
+    "start:planner": "cd planner-backend && python app.py",
+    "start:assistant": "cd assistant-backend && python app.py"
+  },
+  "keywords": ["tripmate", "travel", "expense", "splitmate", "langgraph", "fastmcp", "react"],
+  "author": "",
+  "license": "ISC"
+}
