@@ -3,6 +3,7 @@ import { useAuth } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { SPLITMATE_API, ASSISTANT_API } from '../config/api';
 import { CategoryPieChart, SpendingBarChart } from '../components/Charts/DashboardCharts';
 import { 
   Sparkles, 
@@ -84,7 +85,7 @@ export default function Assistant() {
         const headers = { 'Authorization': `Bearer ${token}` };
 
         // Fetch Trips
-        const tripsRes = await fetch('http://localhost:5000/api/trips/my-trips', { headers });
+        const tripsRes = await fetch(`${SPLITMATE_API}/trips/my-trips`, { headers });
         if (tripsRes.ok) {
           const tData = await tripsRes.json();
           setTrips(Array.isArray(tData) ? tData : []);
@@ -94,7 +95,7 @@ export default function Assistant() {
         }
 
         // Fetch User Threads
-        const threadsRes = await fetch('http://localhost:8002/api/assistant/sessions', { headers });
+        const threadsRes = await fetch(`${ASSISTANT_API}/assistant/sessions`, { headers });
         if (threadsRes.ok) {
           const sData = await threadsRes.json();
           const list = sData.threads || [];
@@ -120,7 +121,7 @@ export default function Assistant() {
     try {
       setLoading(true);
       const token = await getToken();
-      const res = await fetch(`http://localhost:8002/api/assistant/sessions/${threadId}/messages`, {
+      const res = await fetch(`${ASSISTANT_API}/assistant/sessions/${threadId}/messages`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -153,7 +154,7 @@ export default function Assistant() {
         title = 'Global Travel Assistant';
       }
 
-      const res = await fetch('http://localhost:8002/api/assistant/sessions', {
+      const res = await fetch(`${ASSISTANT_API}/assistant/sessions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -195,7 +196,7 @@ export default function Assistant() {
     try {
       setIsDeletingThread(true);
       const token = await getToken();
-      const res = await fetch(`http://localhost:8002/api/assistant/sessions/${threadId}`, {
+      const res = await fetch(`${ASSISTANT_API}/assistant/sessions/${threadId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -242,7 +243,7 @@ export default function Assistant() {
 
     try {
       const token = await getToken();
-      const res = await fetch('http://localhost:8002/api/assistant/chat', {
+      const res = await fetch(`${ASSISTANT_API}/assistant/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -293,7 +294,7 @@ export default function Assistant() {
   const fetchThreadsList = async () => {
     try {
       const token = await getToken();
-      const res = await fetch('http://localhost:8002/api/assistant/sessions', {
+      const res = await fetch(`${ASSISTANT_API}/assistant/sessions`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -308,7 +309,7 @@ export default function Assistant() {
     try {
       setConfirmingAction(true);
       const token = await getToken();
-      const res = await fetch('http://localhost:8002/api/assistant/confirm-action', {
+      const res = await fetch(`${ASSISTANT_API}/assistant/confirm-action`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

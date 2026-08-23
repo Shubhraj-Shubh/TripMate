@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { SPLITMATE_API, PLANNER_API } from '../config/api';
 import { CategoryPieChart, SpendingBarChart } from '../components/Charts/DashboardCharts';
 import { 
   ArrowLeft, 
@@ -92,7 +93,7 @@ export default function TripDetails() {
       const headers = { 'Authorization': `Bearer ${token}` };
 
       // 1. Core trip details
-      const res = await fetch(`http://localhost:5000/api/trips/${tripId}`, { headers });
+      const res = await fetch(`${SPLITMATE_API}/trips/${tripId}`, { headers });
       if (!res.ok) {
         showToast("Could not load trip details.", "error");
         navigate('/expenses');
@@ -103,12 +104,12 @@ export default function TripDetails() {
 
       // 2. Parallel fetch metrics
       const [totalRes, catRes, memRes, matRes, myBalRes, myCatRes] = await Promise.all([
-        fetch(`http://localhost:5000/api/trips/${tripId}/totalExpense`, { headers }),
-        fetch(`http://localhost:5000/api/trips/${tripId}/category-expenses`, { headers }),
-        fetch(`http://localhost:5000/api/trips/${tripId}/membersExpenseSummary`, { headers }),
-        fetch(`http://localhost:5000/api/trips/${tripId}/balanceMatrix`, { headers }),
-        fetch(`http://localhost:5000/api/trips/${tripId}/my-balances`, { headers }),
-        fetch(`http://localhost:5000/api/trips/${tripId}/user/category-expenses`, { headers })
+        fetch(`${SPLITMATE_API}/trips/${tripId}/totalExpense`, { headers }),
+        fetch(`${SPLITMATE_API}/trips/${tripId}/category-expenses`, { headers }),
+        fetch(`${SPLITMATE_API}/trips/${tripId}/membersExpenseSummary`, { headers }),
+        fetch(`${SPLITMATE_API}/trips/${tripId}/balanceMatrix`, { headers }),
+        fetch(`${SPLITMATE_API}/trips/${tripId}/my-balances`, { headers }),
+        fetch(`${SPLITMATE_API}/trips/${tripId}/user/category-expenses`, { headers })
       ]);
 
       if (totalRes.ok) {
@@ -178,7 +179,7 @@ export default function TripDetails() {
     try {
       const token = await getToken();
       // Friends list
-      const friendsRes = await fetch('http://localhost:5000/api/users/me/friends-balances', {
+      const friendsRes = await fetch(`${SPLITMATE_API}/users/me/friends-balances`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (friendsRes.ok) {
@@ -187,7 +188,7 @@ export default function TripDetails() {
       }
 
       // Saved Plans from planner-backend
-      const plansRes = await fetch(`http://localhost:8001/api/travel/saved?user_id=${userId || ''}`, {
+      const plansRes = await fetch(`${PLANNER_API}/travel/saved?user_id=${userId || ''}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (plansRes.ok) {
@@ -338,8 +339,8 @@ export default function TripDetails() {
       };
 
       const url = editingExpenseId 
-        ? `http://localhost:5000/api/trips/${tripId}/expenses/${editingExpenseId}`
-        : `http://localhost:5000/api/trips/${tripId}/expenses`;
+        ? `${SPLITMATE_API}/trips/${tripId}/expenses/${editingExpenseId}`
+        : `${SPLITMATE_API}/trips/${tripId}/expenses`;
       
       const method = editingExpenseId ? 'PUT' : 'POST';
 
@@ -376,7 +377,7 @@ export default function TripDetails() {
     try {
       setDeletingExpense(true);
       const token = await getToken();
-      const res = await fetch(`http://localhost:5000/api/trips/${tripId}/expenses/${expenseId}`, {
+      const res = await fetch(`${SPLITMATE_API}/trips/${tripId}/expenses/${expenseId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -397,7 +398,7 @@ export default function TripDetails() {
   };
 
   // Add Member Chip Helpers
-  const handleAddNewMemberChip = (val) => {
+  const handleAddMemberChip = (val) => {
     const clean = String(val || '').trim();
     if (!clean) return;
     if (!newMemberChips.includes(clean)) {
@@ -406,14 +407,14 @@ export default function TripDetails() {
     setNewMemberInput('');
   };
 
-  const handleRemoveNewMemberChip = (chipToRemove) => {
+  const handleRemoveMemberChip = (chipToRemove) => {
     setNewMemberChips(prev => prev.filter(c => c !== chipToRemove));
   };
 
-  const handleKeyDownNewMember = (e) => {
+  const handleKeyDownMemberInput = (e) => {
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
-      handleAddNewMemberChip(newMemberInput);
+      handleAddMemberChip(newMemberInput);
     }
   };
 
@@ -421,7 +422,7 @@ export default function TripDetails() {
   const handleAddMembersSubmit = async (e) => {
     if (e) e.preventDefault();
     const finalMembersList = [...newMemberChips];
-    if (newMemberInput.trim()) {
+    if (newMemberInput.trim() && !finalMembersList.includes(newMemberInput.trim())) {
       finalMembersList.push(newMemberInput.trim());
     }
 
@@ -433,7 +434,7 @@ export default function TripDetails() {
     try {
       setAddingMember(true);
       const token = await getToken();
-      const res = await fetch(`http://localhost:5000/api/trips/${tripId}/members`, {
+      const res = await fetch(`${SPLITMATE_API}/trips/${tripId}/members`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -466,7 +467,7 @@ export default function TripDetails() {
       const token = await getToken();
 
       if (!selectedPlanToAttach || selectedPlanToAttach === 'detach') {
-        const res = await fetch(`http://localhost:5000/api/trips/${tripId}/attach-plan`, {
+        const res = await fetch(`${SPLITMATE_API}/trips/${tripId}/attach-plan`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -516,7 +517,7 @@ export default function TripDetails() {
         budget: vObj.budget || targetPlanDoc.budget
       };
 
-      const res = await fetch(`http://localhost:5000/api/trips/${tripId}/attach-plan`, {
+      const res = await fetch(`${SPLITMATE_API}/trips/${tripId}/attach-plan`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

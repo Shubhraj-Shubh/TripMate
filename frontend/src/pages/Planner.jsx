@@ -3,6 +3,7 @@ import { useAuth } from '@clerk/clerk-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useNavigate } from 'react-router-dom';
+import { PLANNER_API } from '../config/api';
 import { 
   Plane, 
   Hotel, 
@@ -222,7 +223,7 @@ export default function Planner() {
     setActiveNodeText('Supervisor analyzing travel intent & guardrails...');
 
     try {
-      const qRes = await fetch('http://localhost:8001/api/travel/questionnaire', {
+      const qRes = await fetch(`${PLANNER_API}/travel/questionnaire`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: finalPrompt, user_id: userId || '' })
@@ -267,7 +268,7 @@ export default function Planner() {
     abortControllerRef.current = new AbortController();
 
     try {
-      const res = await fetch('http://localhost:8001/api/travel', {
+      const res = await fetch(`${PLANNER_API}/travel`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         signal: abortControllerRef.current.signal,
@@ -377,7 +378,7 @@ export default function Planner() {
     }
     if (threadId) {
       try {
-        await fetch('http://localhost:8001/api/travel/cancel', {
+        await fetch(`${PLANNER_API}/travel/cancel`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ thread_id: threadId })
@@ -399,7 +400,7 @@ export default function Planner() {
       setIsRevising(true);
       setActiveNodeText('Applying feedback and updating itinerary...');
       
-      const res = await fetch('http://localhost:8001/api/travel/approve', {
+      const res = await fetch(`${PLANNER_API}/travel/approve`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -462,7 +463,7 @@ export default function Planner() {
       setIsFinalizing(true);
       setActiveNodeText('Finalizing unified report & formatting...');
 
-      const res = await fetch('http://localhost:8001/api/travel/approve', {
+      const res = await fetch(`${PLANNER_API}/travel/approve`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -506,7 +507,7 @@ export default function Planner() {
       const bud = activeTripConstraints.budget || budgetFilter || 'Moderate';
       const title = `Trip to ${dest} (${dur})`;
 
-      const res = await fetch('http://localhost:8001/api/travel/save', {
+      const res = await fetch(`${PLANNER_API}/travel/save`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -547,7 +548,7 @@ export default function Planner() {
   // 8. Delete Saved Plan from MongoDB
   const handleDeleteSavedPlan = async (planId) => {
     try {
-      const res = await fetch(`http://localhost:8001/api/travel/saved/${planId}`, {
+      const res = await fetch(`${PLANNER_API}/travel/saved/${planId}`, {
         method: 'DELETE'
       });
       if (res.ok) {

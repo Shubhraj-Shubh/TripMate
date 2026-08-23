@@ -3,6 +3,7 @@ import { useAuth } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
 import { CategoryPieChart, SpendingBarChart } from '../components/Charts/DashboardCharts';
 import { Compass, Wallet, Users, Sparkles, ArrowRight } from 'lucide-react';
+import { SPLITMATE_API } from '../config/api';
 
 const TRAVEL_QUOTES = [
   "Adventure is worthwhile.",
@@ -40,28 +41,28 @@ export default function Dashboard() {
         const headers = { 'Authorization': `Bearer ${token}` };
 
         // 1. Total Trips
-        const tripsRes = await fetch('http://localhost:5000/api/users/totalTrips', { headers });
+        const tripsRes = await fetch(`${SPLITMATE_API}/users/totalTrips`, { headers });
         if (tripsRes.ok) {
           const d = await tripsRes.json();
           setTotalTrips(d.totalTrips ?? 0);
         }
 
         // 2. Total Expense (User's share in INR)
-        const expRes = await fetch('http://localhost:5000/api/users/totalExpense', { headers });
+        const expRes = await fetch(`${SPLITMATE_API}/users/totalExpense`, { headers });
         if (expRes.ok) {
           const d = await expRes.json();
           setTotalExpense(d.totalExpense ?? 0);
         }
 
         // 3. Total Friends
-        const friendsRes = await fetch('http://localhost:5000/api/users/totalFriends', { headers });
+        const friendsRes = await fetch(`${SPLITMATE_API}/users/totalFriends`, { headers });
         if (friendsRes.ok) {
           const d = await friendsRes.json();
           setTotalFriends(d.totalFriends ?? 0);
         }
 
         // 4. Category Summary
-        const catRes = await fetch('http://localhost:5000/api/users/categorySummary', { headers });
+        const catRes = await fetch(`${SPLITMATE_API}/users/categorySummary`, { headers });
         if (catRes.ok) {
           const d = await catRes.json();
           let chartData = [];
@@ -80,7 +81,7 @@ export default function Dashboard() {
         }
 
         // 5. Recent Trips Expense Comparison
-        const recentSumRes = await fetch('http://localhost:5000/api/users/recentTripsSummary', { headers });
+        const recentSumRes = await fetch(`${SPLITMATE_API}/users/recentTripsSummary`, { headers });
         if (recentSumRes.ok) {
           const d = await recentSumRes.json();
           if (Array.isArray(d.summary)) {
@@ -93,7 +94,7 @@ export default function Dashboard() {
         }
 
         // 6. Recent Trips list
-        const myTripsRes = await fetch('http://localhost:5000/api/trips/my-trips', { headers });
+        const myTripsRes = await fetch(`${SPLITMATE_API}/trips/my-trips`, { headers });
         if (myTripsRes.ok) {
           const d = await myTripsRes.json();
           setRecentTrips(d.slice(0, 4));

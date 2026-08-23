@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Sparkles, Search, ArrowRight, AlertCircle, CheckCircle, X, UserPlus, FileText, Check } from 'lucide-react';
+import { SPLITMATE_API, PLANNER_API } from '../config/api';
 import './Trips.css';
 
 export default function Trips() {
@@ -31,7 +32,7 @@ export default function Trips() {
     try {
       setLoading(true);
       const token = await getToken();
-      const res = await fetch('http://localhost:5000/api/trips/my-trips', {
+      const res = await fetch(`${SPLITMATE_API}/trips/my-trips`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -50,7 +51,7 @@ export default function Trips() {
     try {
       const token = await getToken();
       // 1. Friends list
-      const friendsRes = await fetch('http://localhost:5000/api/users/me/friends-balances', {
+      const friendsRes = await fetch(`${SPLITMATE_API}/users/me/friends-balances`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (friendsRes.ok) {
@@ -59,7 +60,7 @@ export default function Trips() {
       }
 
       // 2. Saved Travel Plans from planner-backend
-      const plansRes = await fetch(`http://localhost:8001/api/travel/saved?user_id=${userId || ''}`, {
+      const plansRes = await fetch(`${PLANNER_API}/travel/saved?user_id=${userId || ''}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (plansRes.ok) {
@@ -73,8 +74,12 @@ export default function Trips() {
 
   useEffect(() => {
     fetchTrips();
+  }, []);
+
+  const openCreateModal = () => {
+    setShowModal(true);
     fetchAuxData();
-  }, [userId]);
+  };
 
   const handleAddMemberChip = (val) => {
     const clean = String(val || '').trim();
@@ -108,24 +113,16 @@ export default function Trips() {
       const token = await getToken();
 
       let attachedPlanPayload = null;
-      if (selectedPlanOption && selectedPlanOption !== 'detach') {
-        const [planDocId, versionStr] = selectedPlanOption.split('::');
-        const targetPlanDoc = savedPlansList.find(p => p._id === planDocId);
+      if (selectedPlanOption) {
+        const [targetPlanId, targetVersion] = selectedPlanOption.split('_v');
+        const targetPlanDoc = savedPlansList.find(p => p._id === targetPlanId || p.planId === targetPlanId);
         if (targetPlanDoc) {
-          const vNum = parseInt(versionStr, 10);
-          const vObj = (targetPlanDoc.versions || []).find(v => v.version === vNum) || {
-            version: vNum,
-            itinerary: targetPlanDoc.itinerary,
-            duration: targetPlanDoc.duration,
-            groupSize: targetPlanDoc.groupSize,
-            budget: targetPlanDoc.budget,
-            destination: targetPlanDoc.destination
-          };
-
+          const vNum = Number(targetVersion) || 1;
+          const vObj = (targetPlanDoc.versions || []).find(v => v.version === vNum) || {};
           attachedPlanPayload = {
-            planId: targetPlanDoc._id,
-            title: `Trip to ${vObj.destination || targetPlanDoc.destination} (v${vNum})`,
-            destination: vObj.destination || targetPlanDoc.destination,
+            planId: targetPlanDoc._id || targetPlanDoc.planId,
+            title: targetPlanDoc.title,
+            destination: targetPlanDoc.destination,
             version: vNum,
             itinerary: vObj.itinerary || targetPlanDoc.itinerary,
             duration: vObj.duration || targetPlanDoc.duration,
@@ -135,7 +132,7 @@ export default function Trips() {
         }
       }
 
-      const res = await fetch('http://localhost:5000/api/trips/create', {
+      const res = await fetch(`${SPLITMATE_API}/trips/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

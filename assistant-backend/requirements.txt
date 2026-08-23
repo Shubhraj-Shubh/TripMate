@@ -1,6 +1,7 @@
 fastapi>=0.110.0
 uvicorn>=0.28.0
 google-genai>=0.1.1
+langchain-google-genai>=1.0.0
 langchain-core>=0.1.30
 langgraph>=0.0.30
 fastmcp>=0.1.0

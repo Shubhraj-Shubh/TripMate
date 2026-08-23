@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { Users, Inbox, Send, Check, X, AlertCircle, CheckCircle, UserPlus } from 'lucide-react';
+import { SPLITMATE_API } from '../config/api';
 
 export default function Friends() {
   const { getToken } = useAuth();
@@ -25,21 +26,21 @@ export default function Friends() {
       const headers = { 'Authorization': `Bearer ${token}` };
 
       // 1. Friends with Balances
-      const friendsRes = await fetch('http://localhost:5000/api/users/me/friends-balances', { headers });
+      const friendsRes = await fetch(`${SPLITMATE_API}/users/me/friends-balances`, { headers });
       if (friendsRes.ok) {
         const data = await friendsRes.json();
         setFriends(data);
       }
 
       // 2. Incoming Requests
-      const incRes = await fetch('http://localhost:5000/api/friends/incoming', { headers });
+      const incRes = await fetch(`${SPLITMATE_API}/friends/incoming`, { headers });
       if (incRes.ok) {
         const data = await incRes.json();
         setIncomingReqs(data);
       }
 
       // 3. Outgoing Requests
-      const outRes = await fetch('http://localhost:5000/api/friends/outgoing', { headers });
+      const outRes = await fetch(`${SPLITMATE_API}/friends/outgoing`, { headers });
       if (outRes.ok) {
         const data = await outRes.json();
         setOutgoingReqs(data);
@@ -68,7 +69,7 @@ export default function Friends() {
     try {
       setAddingFriend(true);
       const token = await getToken();
-      const res = await fetch('http://localhost:5000/api/friends/send', {
+      const res = await fetch(`${SPLITMATE_API}/friends/send`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -101,7 +102,7 @@ export default function Friends() {
     try {
       setRespondingId(requestId);
       const token = await getToken();
-      const res = await fetch('http://localhost:5000/api/friends/respond', {
+      const res = await fetch(`${SPLITMATE_API}/friends/respond`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
