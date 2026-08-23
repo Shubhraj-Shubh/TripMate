@@ -3,12 +3,14 @@ import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-do
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
 
 import Dashboard from './pages/Dashboard';
+import LandingPage from './pages/LandingPage';
 import Planner from './pages/Planner';
 import Trips from './pages/Trips';
 import TripDetails from './pages/TripDetails';
 import Friends from './pages/Friends';
 import Assistant from './pages/Assistant';
 import NotFound from './pages/NotFound';
+import FeaturePreview from './components/FeaturePreview';
 
 import { Compass, Sparkles, Wallet, Users, MessageSquare } from 'lucide-react';
 import logoImg from './assets/logo.png';
@@ -33,7 +35,6 @@ function App() {
             <NavLink to="/expenses" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
               <Wallet size={16} /> SplitMate
             </NavLink>
-
             <NavLink to="/friends" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
               <Users size={16} /> Friends
             </NavLink>
@@ -59,34 +60,64 @@ function App() {
           <Routes>
             <Route path="/" element={<HomeWrapper />} />
             <Route path="/planner" element={
-              <SignedIn>
-                <Planner />
-              </SignedIn>
+              <>
+                <SignedIn>
+                  <Planner />
+                </SignedIn>
+                <SignedOut>
+                  <FeaturePreview type="planner" />
+                </SignedOut>
+              </>
             } />
             <Route path="/expenses" element={
-              <SignedIn>
-                <Trips />
-              </SignedIn>
+              <>
+                <SignedIn>
+                  <Trips />
+                </SignedIn>
+                <SignedOut>
+                  <FeaturePreview type="expenses" />
+                </SignedOut>
+              </>
             } />
             <Route path="/trips" element={
-              <SignedIn>
-                <Trips />
-              </SignedIn>
+              <>
+                <SignedIn>
+                  <Trips />
+                </SignedIn>
+                <SignedOut>
+                  <FeaturePreview type="expenses" />
+                </SignedOut>
+              </>
             } />
             <Route path="/trips/:tripId" element={
-              <SignedIn>
-                <TripDetails />
-              </SignedIn>
+              <>
+                <SignedIn>
+                  <TripDetails />
+                </SignedIn>
+                <SignedOut>
+                  <FeaturePreview type="expenses" />
+                </SignedOut>
+              </>
             } />
             <Route path="/friends" element={
-              <SignedIn>
-                <Friends />
-              </SignedIn>
+              <>
+                <SignedIn>
+                  <Friends />
+                </SignedIn>
+                <SignedOut>
+                  <FeaturePreview type="friends" />
+                </SignedOut>
+              </>
             } />
             <Route path="/assistant" element={
-              <SignedIn>
-                <Assistant />
-              </SignedIn>
+              <>
+                <SignedIn>
+                  <Assistant />
+                </SignedIn>
+                <SignedOut>
+                  <FeaturePreview type="assistant" />
+                </SignedOut>
+              </>
             } />
             <Route path="*" element={<NotFound />} />
           </Routes>
@@ -103,29 +134,9 @@ function HomeWrapper() {
         <Dashboard />
       </SignedIn>
       <SignedOut>
-        <PublicLanding />
+        <LandingPage />
       </SignedOut>
     </>
-  );
-}
-
-function PublicLanding() {
-  return (
-    <div className="hero-container">
-      <div className="hero-banner">
-        <h1>Next-Gen Travel & Shared Expenses</h1>
-        <p>
-          Generate complete AI travel itineraries with multi-agent coordination, and track group expenses with SplitMate and a FastMCP smart assistant.
-        </p>
-        <div className="hero-actions">
-          <SignInButton mode="modal">
-            <button className="btn btn-primary" style={{ fontSize: '1.05rem', padding: '12px 28px' }}>
-              Sign In with Google / Email to Get Started
-            </button>
-          </SignInButton>
-        </div>
-      </div>
-    </div>
   );
 }
 
